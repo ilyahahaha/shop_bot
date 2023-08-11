@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
 from enum import StrEnum
 
+from src.common.bootstrapper import bootstrap
+
 
 class Commands(StrEnum):
     CREATE_ADMIN = "create_admin"
@@ -40,7 +42,7 @@ def register_commands(parser: ArgumentParser) -> None:
     commands.add_parser(Commands.START, help="Запустить бота")
 
 
-async def command_line(args_list: list[str]) -> None:
+def command_line(args_list: list[str]) -> None:
     """
     Точка входа для CLI интерфейса бота.
     :param args_list: Список аргументов передаваемых в парсер
@@ -61,4 +63,4 @@ async def command_line(args_list: list[str]) -> None:
         case Commands.DELETE_ADMIN:
             return print("delete")
         case Commands.START:
-            return print("start")
+            bootstrap()

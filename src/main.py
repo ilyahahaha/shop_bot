@@ -1,12 +1,13 @@
-from asyncio import run
-from sys import argv
+import logging
+from sys import argv, stdout
 
-from utils.cli import command_line
+from src.utils.cli import command_line
 
 
-async def main() -> None:
-    await command_line(argv[1:])
+def main() -> None:
+    command_line(argv[1:])
 
 
 if __name__ == "__main__":
-    run(main())
+    logging.basicConfig(level=logging.INFO, stream=stdout)
+    main()

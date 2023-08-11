@@ -10,6 +10,7 @@ python = "^3.11"
 aiogram = {version = "^3.0.0rc1", allow-prereleases = true}
 pydantic = "^2.1.1"
 aiohttp = "^3.8.5"
+pydantic-settings = "^2.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
