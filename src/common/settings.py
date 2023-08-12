@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     Доступные значения:
         - base_dir - [стандартное значение] директория корневого модуля
         - postgres_url - адрес базы данных PostgreSQL
+        - secret_key - ключ для шифрования куки и пароля
         - bot_token - токен бота
         - base_url - базовый адрес приложения (http://0.0.0.0:8000)
     """
@@ -23,5 +24,6 @@ class Settings(BaseSettings):
     base_dir: DirectoryPath = path.dirname(path.dirname(__file__))
 
     postgres_url: PostgresDsn
+    secret_key: str
     bot_token: str
     base_url: HttpUrl

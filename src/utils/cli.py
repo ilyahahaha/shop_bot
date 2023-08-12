@@ -1,16 +1,24 @@
 from argparse import ArgumentParser
 from enum import StrEnum
+from pathlib import Path
+
+from alembic import command
+from alembic.config import Config
 
 from src.common.bootstrapper import bootstrap
 from src.common.settings import Settings
 
 settings = Settings()
 
+alembic_cfg = Config(Path(settings.base_dir).parent / "alembic.ini")
+
 
 class Commands(StrEnum):
     CREATE_ADMIN = "create_admin"
     DELETE_ADMIN = "delete_admin"
     START = "start"
+    MAKE_MIGRATIONS = "make_migrations"
+    MIGRATE = "migrate"
 
 
 def register_commands(parser: ArgumentParser) -> None:
@@ -27,7 +35,7 @@ def register_commands(parser: ArgumentParser) -> None:
     # Создание администратора
     create_admin_command = commands.add_parser(
         Commands.CREATE_ADMIN,
-        help="Создает нового администратора с заданным именем и паролем.",
+        help="Создать администратора с заданным именем и паролем.",
     )
     create_admin_command.add_argument(
         "--username", required=True, help="Имя пользователя"
@@ -36,13 +44,17 @@ def register_commands(parser: ArgumentParser) -> None:
 
     # Удаление администратора
     delete_admin_command = commands.add_parser(
-        Commands.DELETE_ADMIN, help="Удаляет администратора с заданным именем."
+        Commands.DELETE_ADMIN, help="Удалить администратора с заданным именем."
     )
     delete_admin_command.add_argument(
         "--username", required=True, help="Имя пользователя"
     )
 
-    commands.add_parser(Commands.START, help="Запустить бота")
+    commands.add_parser(Commands.START, help="Запустить бота.")
+    commands.add_parser(
+        Commands.MAKE_MIGRATIONS, help="Сгенерировать миграции для базы данных."
+    )
+    commands.add_parser(Commands.MIGRATE, help="Внести изменения в базу данных.")
 
 
 def command_line(args_list: list[str]) -> None:
@@ -53,7 +65,7 @@ def command_line(args_list: list[str]) -> None:
     """
 
     parser = ArgumentParser(
-        prog="shop_bot CLI", description="Интерфейс управление ботом-магазином."
+        prog="Shop Bot CLI", description="Интерфейс управление ботом-магазином."
     )
     register_commands(parser)
 
@@ -67,3 +79,7 @@ def command_line(args_list: list[str]) -> None:
             return print("delete")
         case Commands.START:
             bootstrap()
+        case Commands.MAKE_MIGRATIONS:
+            command.revision(alembic_cfg, autogenerate=True)
+        case Commands.MIGRATE:
+            command.upgrade(alembic_cfg, "head")

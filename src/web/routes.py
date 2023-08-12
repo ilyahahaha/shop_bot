@@ -5,7 +5,7 @@ from aiohttp_jinja2 import template
 from aiohttp_session import get_session
 from pydantic import ValidationError
 
-from src.web.schemas.admin import Admin
+from src.schemas.admin import AdminSchema
 
 router = RouteTableDef()
 
@@ -39,7 +39,7 @@ async def login_post(request: Request) -> Response:
     form = await request.post()
 
     try:
-        data = Admin.model_validate(form)
+        data = AdminSchema.model_validate(form)
 
         # TODO: работа с базой данных
         session["username"] = data.login

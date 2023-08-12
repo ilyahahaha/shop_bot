@@ -11,8 +11,8 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from jinja2 import FileSystemLoader
 
 from src.common.settings import Settings
+from src.utils.web.username_context_processor import username_context_processor
 from src.web.routes import router
-from src.web.utils.username_context_processor import username_context_processor
 
 settings = Settings()
 
