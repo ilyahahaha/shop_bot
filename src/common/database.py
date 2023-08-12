@@ -7,7 +7,7 @@ from src.utils.singleton import singleton
 settings = Settings()
 
 engine = create_async_engine(
-    settings.asyncpg_url.unicode_string(),
+    settings.postgres_url.unicode_string(),
     future=True,
     echo=True,
 )
