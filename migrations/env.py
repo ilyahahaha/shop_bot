@@ -4,9 +4,9 @@ from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from src.common.settings import Settings
-from src.models.base import BaseModel
+from src.models.base import Base
 
-target_metadata = BaseModel.metadata
+target_metadata = Base.metadata
 
 settings = Settings()
 

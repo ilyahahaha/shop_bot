@@ -5,12 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.common.settings import Settings
-from src.models.base import BaseModel
+from src.models.base import Base
 
 settings = Settings()
 
 
-class Admin(BaseModel):
+class Admin(Base):
     username: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
 

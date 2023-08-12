@@ -12,15 +12,16 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from jinja2 import FileSystemLoader
 
 from src.common.settings import Settings
+from src.telegram.router import router as telegram_router
 from src.utils.web.username_context_processor import username_context_processor
 from src.web.middlewares import check_login
-from src.web.routes import router
+from src.web.router import router as web_router
 
 settings = Settings()
 
 
 async def bot_startup_callback(bot: Bot) -> None:
-    await bot.set_webhook(f"{settings.base_url}/webhook")
+    await bot.set_webhook(f"{settings.base_url}webhook")
 
 
 def init_dispatcher() -> Dispatcher:
@@ -28,6 +29,8 @@ def init_dispatcher() -> Dispatcher:
     dispatcher["base_url"] = settings.base_url
 
     dispatcher.startup.register(bot_startup_callback)
+
+    dispatcher.include_router(telegram_router)
 
     return dispatcher
 
@@ -41,7 +44,7 @@ def init_web(bot: Bot) -> Application:
     web_app["static_root_url"] = "/static"
 
     # Подключаем роуты
-    web_app.add_routes(router)
+    web_app.add_routes(web_router)
 
     # Подключаем библиотеки
     session_setup(

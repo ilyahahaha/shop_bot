@@ -1,1 +1,68 @@
 {% extends "partials/layout.jinja2" %}
+
+{% block content %}
+    <div class="container-xl pt-3">
+        <div id="users-table" class="card">
+            <div class="card-header">
+                <div class="d-flex w-100 align-items-center">
+                    <h3 class="card-title">Пользователи</h3>
+
+                    <input type="search" class="fuzzy-search ms-auto form-control w-25" placeholder="Поиск...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Имя пользователя</th>
+                    </tr>
+                    </thead>
+
+                    <tbody class="list">
+                    {% for user in users %}
+                        <tr>
+                            <td class="user-id">{{ user.user_id }}</td>
+                            <td class="first-name">{{ user.first_name }}</td>
+                            <td class="last-name">{{ user.last_name if user.last_name else "-" }}</td>
+                            <td class="username">
+                                {% if user.username %}
+                                    <a href="https://t.me/{{ user.username }}"
+                                       target="_blank">
+                                        @{{ user.username }}
+                                    </a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer d-flex align-items-center">
+                <ul class="pagination m-0 ms-auto"></ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+    <script src="{{ static("libs/list.js/dist/list.min.js") }}" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new List('users-table', {
+                valueNames: ['user-id', 'first-name', 'last-name', 'user-id'],
+                page: 10,
+                pagination: {
+                    outerWindow: 1,
+                    item: '<li class="page-item"><a class="page page-link" href="#"></a></li>'
+                },
+            });
+        })
+    </script>
+{% endblock javascript %}

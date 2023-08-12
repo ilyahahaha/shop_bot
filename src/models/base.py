@@ -14,7 +14,7 @@ from src.common.exceptions import DatabaseAlreadyExistsExceptions, DatabaseUnkno
 cuid = Cuid(length=16)
 
 
-class BaseModel(DeclarativeBase):
+class Base(DeclarativeBase):
     id: Mapped[str] = mapped_column(String(16), primary_key=True, default=cuid.generate)
     __name__: str
 

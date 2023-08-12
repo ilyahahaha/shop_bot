@@ -7,9 +7,10 @@ from aiohttp_session import get_session
 from pydantic import ValidationError
 
 from src.common.database import Database
-from src.models import Admin
+from src.models import Admin, User
 from src.schemas.admin import LoginAdminSchema
 from src.schemas.toast import Toast
+from src.schemas.user import UserSchema
 from src.utils.web.password import verify_password
 from src.utils.web.require_login import require_login
 
@@ -37,13 +38,16 @@ async def login_view(request: Request) -> dict:
 @router.get("/")
 @require_login
 @template("users.jinja2")
-async def users_view(_) -> dict:
+async def users_view(_) -> dict[str, list[UserSchema]]:
     """
     (GET) Страница пользователей бота (a.k.a главная)
-    :return: dict
+    :return: dict[str, list[UserSchema]]
     """
 
-    return {}
+    db_session = await database.get_session()
+    users = await User.get_all_users(db_session)
+
+    return {"users": users}
 
 
 @router.post("/login")
