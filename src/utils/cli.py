@@ -2,6 +2,9 @@ from argparse import ArgumentParser
 from enum import StrEnum
 
 from src.common.bootstrapper import bootstrap
+from src.common.settings import Settings
+
+settings = Settings()
 
 
 class Commands(StrEnum):
@@ -59,7 +62,7 @@ def command_line(args_list: list[str]) -> None:
     # Обработчик команд администратора
     match args.commands:
         case Commands.CREATE_ADMIN:
-            return print("create")
+            return print(settings.base_dir)
         case Commands.DELETE_ADMIN:
             return print("delete")
         case Commands.START:

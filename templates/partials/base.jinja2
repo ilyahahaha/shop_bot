@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- CSS files -->
+    <link href="{{ static("css/tabler.min.css") }}" rel="stylesheet"/>
+    <link href="{{ static("css/tabler-vendors.min.css") }}" rel="stylesheet"/>
+    <link href="{{ static("css/main.min.css") }}" rel="stylesheet"/>
+
+    <link href="{{ static("libs/sweetalert2/dist/swal.min.css") }}" rel="stylesheet"/>
+
+    <!-- Font -->
+    <style>
+        @import url('https://rsms.me/inter/inter.css');
+
+        :root {
+            --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+    </style>
+</head>
+<body>
+
+<script src="{{ static("js/main-theme.min.js") }}"></script>
+
+{% block layout %}{% endblock layout %}
+
+<script src="{{ static("js/tabler.min.js") }}" defer></script>
+<script src="{{ static("js/main.min.js") }}" defer></script>
+
+<script src="{{ static("libs/htmx/dist/htmx.min.js") }}"></script>
+<script src="{{ static("libs/sweetalert2/dist/swal.min.js") }}"></script>
+
+<script>
+    window.htmx.on("showMessage", (e) => {
+        Swal.fire({
+            toast: true,
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            position: 'bottom-end',
+            text: e.detail.value,
+        })
+    })
+</script>
+
+</body>
+</html>

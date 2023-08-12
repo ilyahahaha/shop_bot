@@ -1,0 +1,32 @@
+{% extends "partials/base.jinja2" %}
+
+{% block layout %}
+    <div class="page page-center">
+        <div class="container container-tight">
+            <div class="card card-md">
+                <div class="card-body">
+                    <h2 class="h2 text-center mb-4">Вход в аккаунт</h2>
+
+                    <form action="/login" method="post" autocomplete="off" novalidate>
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Логин</label>
+                            <input id="login" name="login" type="text" class="form-control"
+                                   placeholder="Ваш логин" autocomplete="off">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input id="password" name="password" type="password" class="form-control"
+                                   placeholder="Ваш пароль"
+                                   autocomplete="off">
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary w-100">Войти</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock layout %}

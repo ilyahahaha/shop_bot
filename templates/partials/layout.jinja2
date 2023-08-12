@@ -1,0 +1,12 @@
+{% extends "partials/base.jinja2" %}
+
+{% block layout %}
+    <div class="page">
+        {% include "partials/sidebar.jinja2" %}
+        {% include "partials/navbar.jinja2" %}
+
+        <div class="page-wrapper">
+            {% block content %}{% endblock content %}
+        </div>
+    </div>
+{% endblock layout %}
