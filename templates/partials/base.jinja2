@@ -40,14 +40,15 @@
 <script src="{{ static("libs/sweetalert2/dist/swal.min.js") }}"></script>
 
 <script>
-    window.htmx.on("showMessage", (e) => {
+    window.htmx.on("toast", (e) => {
         Swal.fire({
             toast: true,
             showConfirmButton: false,
             timer: 2000,
             timerProgressBar: true,
             position: 'bottom-end',
-            text: e.detail.value,
+            icon: e.detail.error ? 'error' : 'success',
+            text: e.detail.message,
         })
     })
 </script>

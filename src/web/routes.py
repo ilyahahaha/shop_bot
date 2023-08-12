@@ -1,12 +1,19 @@
 import json
 
-from aiohttp.web import RouteTableDef, Request, HTTPSeeOther, Response
+from aiohttp.web import RouteTableDef, Request, HTTPSeeOther, Response, HTTPUnauthorized
+from aiohttp.web_exceptions import HTTPBadRequest
 from aiohttp_jinja2 import template
 from aiohttp_session import get_session
 from pydantic import ValidationError
 
+from src.common.database import Database
+from src.models import Admin
 from src.schemas.admin import LoginAdminSchema
+from src.schemas.toast import Toast
+from src.utils.web.password import verify_password
+from src.utils.web.require_login import require_login
 
+database = Database()
 router = RouteTableDef()
 
 
@@ -27,6 +34,18 @@ async def login_view(request: Request) -> dict:
     return {}
 
 
+@router.get("/")
+@require_login
+@template("users.jinja2")
+async def users_view(_) -> dict:
+    """
+    (GET) Страница пользователей бота (a.k.a главная)
+    :return: dict
+    """
+
+    return {}
+
+
 @router.post("/login")
 async def login_post(request: Request) -> Response:
     """
@@ -35,27 +54,49 @@ async def login_post(request: Request) -> Response:
     :return: Response
     """
 
+    db_session = await database.get_session()
     session = await get_session(request)
     form = await request.post()
 
     try:
         data = LoginAdminSchema.model_validate(form)
+        admin = await Admin.find_by_username(db_session, data.login)
 
-        # TODO: работа с базой данных
+        if admin is None or not verify_password(data.password, admin.hashed_password):
+            raise HTTPUnauthorized(
+                headers={
+                    "HX-Trigger": json.dumps(
+                        {
+                            "toast": Toast(
+                                message="Неверный логин или пароль", error=True
+                            ).model_dump()
+                        }
+                    )
+                },
+            )
+
         session["username"] = data.login
 
-        raise HTTPSeeOther(location="/")
-    except ValidationError:
         return Response(
-            status=204,
+            status=200, text="Вы успешно авторизовались", headers={"HX-Redirect": "/"}
+        )
+    except ValidationError:
+        raise HTTPBadRequest(
             headers={
-                "HX-Trigger": json.dumps({"message": "Неверные параметры запроса"})
+                "HX-Trigger": json.dumps(
+                    {
+                        "toast": Toast(
+                            message="Неверные параметры запроса", error=True
+                        ).model_dump()
+                    }
+                )
             },
         )
 
 
 @router.get("/logout")
-async def logout(request: Request) -> None:
+@require_login
+async def logout_get(request: Request) -> None:
     """
     (POST) Эндпоинт выхода из аккаунта
     :param request: Запрос от клиента

@@ -1,3 +1,4 @@
+from base64 import urlsafe_b64encode
 from pathlib import Path
 
 from aiogram import Bot, Dispatcher
@@ -12,6 +13,7 @@ from jinja2 import FileSystemLoader
 
 from src.common.settings import Settings
 from src.utils.web.username_context_processor import username_context_processor
+from src.web.middlewares import check_login
 from src.web.routes import router
 
 settings = Settings()
@@ -42,7 +44,10 @@ def init_web(bot: Bot) -> Application:
     web_app.add_routes(router)
 
     # Подключаем библиотеки
-    session_setup(web_app, EncryptedCookieStorage(b"Thirty  two  length  bytes  key."))
+    session_setup(
+        web_app,
+        EncryptedCookieStorage(urlsafe_b64encode(settings.secret_key.encode())[:32]),
+    )
     jinja2_setup(
         web_app,
         loader=FileSystemLoader(
@@ -50,6 +55,8 @@ def init_web(bot: Bot) -> Application:
         ),
         context_processors=[username_context_processor],
     )
+
+    web_app.middlewares.append(check_login)
 
     return web_app
 
