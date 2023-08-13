@@ -1,8 +1,8 @@
-from typing import Self
+from typing import Self, List
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models import Base
 from src.schemas.category import CategorySchema
@@ -10,6 +10,8 @@ from src.schemas.category import CategorySchema
 
 class Category(Base):
     name: Mapped[str] = mapped_column(unique=True)
+
+    products: Mapped[List["Product"]] = relationship(back_populates="category")  # noqa
 
     @classmethod
     async def get_all_categories(cls, db_session: AsyncSession) -> list[CategorySchema]:

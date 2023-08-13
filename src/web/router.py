@@ -336,3 +336,24 @@ async def new_category_view(_) -> dict:
 
 
 # endregion
+
+
+# region ROUTES: /products
+
+
+@router.get("/products")
+@require_login
+@template("products.jinja2")
+async def products_view(_) -> dict[str, list[CategorySchema]]:
+    """
+    (GET) Страница товаров
+    :return: dict[str, list[CategorySchema]]
+    """
+
+    db_session = await get_db_session()
+    categories = await Category.get_all_categories(db_session)
+
+    return {"products": categories}
+
+
+# endregion
