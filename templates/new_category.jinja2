@@ -1,0 +1,25 @@
+{% extends "partials/layout.jinja2" %}
+
+{% block content %}
+    <div class="container-xl pt-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Создание категории</h3>
+            </div>
+            <form hx-post="/categories" autocomplete="off" novalidate>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Название категории</label>
+                        <input id="name" name="name" type="text" class="form-control"
+                               placeholder="Ваше название">
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary w-full">Создать</button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+{% endblock content %}

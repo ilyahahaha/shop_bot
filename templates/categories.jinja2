@@ -1,0 +1,66 @@
+{% extends "partials/layout.jinja2" %}
+
+
+{% block content %}
+    <div class="container-xl pt-3">
+        <div id="categories-table" class="card">
+            <div class="card-header">
+                <div class="d-flex w-100 align-items-center">
+                    <h3 class="card-title">Категории</h3>
+
+                    <a href="/new_category" class="btn btn-primary ms-auto w-8">+ Категория</a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                    <tr>
+                        <th class="w-25">ID</th>
+                        <th>Название</th>
+                        <th class="w-1"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody class="list">
+                    {% for category in categories %}
+                        <tr>
+                            <td class="id">{{ category.id }}</td>
+                            <td class="name">{{ category.name }}</td>
+                            <td>
+                                <button onclick="updateEditModal(this)"
+                                        class="btn btn-link"
+                                        data-bs-toggle="modal" data-bs-target="#modal-edit-category">
+                                    Изменить
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ static("libs/list.js/dist/list.min.js") }}" defer></script>
+
+    <script>
+        const updateEditModal = (element) => {
+            let modalIdField = document.querySelector("#id")
+            let modalNameField = document.querySelector("#name")
+
+            modalIdField.value = element.closest("tr").querySelector('.id').textContent
+            modalNameField.value = element.closest("tr").querySelector('.name').textContent
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            new List('categories-table', {
+                valueNames: ['id', 'name'],
+            });
+        })
+    </script>
+{% endblock javascript %}
+
+{% include 'partials/modals/edit-category-modal.jinja2' %}

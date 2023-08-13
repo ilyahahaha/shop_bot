@@ -7,14 +7,13 @@ from alembic import command
 from alembic.config import Config
 
 from src.common.bootstrapper import bootstrap
-from src.common.database import Database
+from src.common.database import get_session
 from src.common.exceptions import DatabaseAlreadyExistsExceptions
 from src.common.settings import Settings
 from src.models import Admin
 from src.utils.web.password import pwd_context
 
 settings = Settings()
-database = Database()
 
 alembic_cfg = Config(Path(settings.base_dir).parent / "alembic.ini")
 
@@ -28,26 +27,26 @@ class Commands(StrEnum):
 
 
 async def create_admin_callback(username: str, password: str):
-    session = await database.get_session()
+    session = await get_session()
     admin = Admin(username=username, hashed_password=pwd_context.hash(password))
 
     try:
         await admin.save(session)
+
         return print(f"Администратор {username} создан")
     except DatabaseAlreadyExistsExceptions as ex:
-        await session.close()
         return print(ex.message)
 
 
 async def delete_admin_callback(username: str):
-    session = await database.get_session()
+    session = await get_session()
     admin = await Admin.find_by_username(session, username)
 
     if admin is None:
-        await session.close()
         return print(f"Администратор с именем {username} не найден")
 
     await admin.delete(session)
+
     return print(f"Администратор {username} удален")
 
 

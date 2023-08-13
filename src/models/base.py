@@ -1,5 +1,7 @@
+from typing import Self
+
 from cuid2 import Cuid
-from sqlalchemy import String
+from sqlalchemy import String, select
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import (
@@ -32,13 +34,15 @@ class Base(DeclarativeBase):
         try:
             db_session.add(self)
 
-            return await db_session.commit()
+            await db_session.commit()
         except IntegrityError:
             raise DatabaseAlreadyExistsExceptions(
                 "Модель с указанными данными уже существует"
             )
         except SQLAlchemyError:
             raise DatabaseUnknownError("Не удалось создать модель")
+        finally:
+            await db_session.close()
 
     async def delete(self, db_session: AsyncSession) -> None:
         """
@@ -50,9 +54,11 @@ class Base(DeclarativeBase):
         try:
             await db_session.delete(self)
 
-            return await db_session.commit()
+            await db_session.commit()
         except SQLAlchemyError:
             raise DatabaseUnknownError("Не удалось удалить модель")
+        finally:
+            await db_session.close()
 
     async def update(self, db_session: AsyncSession, **kwargs) -> None:
         """
@@ -66,6 +72,25 @@ class Base(DeclarativeBase):
             for k, v in kwargs.items():
                 setattr(self, k, v)
 
-            return await db_session.commit()
+            db_session.add(self)
+            await db_session.commit()
         except SQLAlchemyError:
             raise DatabaseUnknownError("Не удалось обновить модель")
+        finally:
+            await db_session.close()
+
+    @classmethod
+    async def find_by_id(cls, db_session: AsyncSession, id: str) -> Self:
+        """
+        Поиск модели по ID.
+        :param db_session: Сессия базы данных
+        :param id: ID модели
+        :return: self
+        """
+
+        stmt = select(cls).where(cls.id == id)
+        result = await db_session.execute(stmt)
+
+        await db_session.close()
+
+        return result.scalars().first()

@@ -28,4 +28,6 @@ class Admin(Base):
         stmt = select(cls).where(cls.username == username)
         result = await db_session.execute(stmt)
 
+        await db_session.close()
+
         return result.scalars().first()

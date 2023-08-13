@@ -27,6 +27,8 @@ class User(Base):
 
         users = result.scalars().all()
 
+        await db_session.close()
+
         return [
             UserSchema.model_validate(u, strict=False, from_attributes=True)
             for u in users
@@ -45,5 +47,7 @@ class User(Base):
 
         stmt = select(cls).where(cls.user_id == user_id)
         result = await db_session.execute(stmt)
+
+        await db_session.close()
 
         return result.scalars().first()

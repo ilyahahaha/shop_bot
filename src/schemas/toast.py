@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
 
-class Toast(BaseModel):
+class ToastSchema(BaseModel):
     message: str
-    error: bool

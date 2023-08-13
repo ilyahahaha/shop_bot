@@ -2,16 +2,15 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from src.common.database import Database
+from src.common.database import get_session
 from src.models import User
 
 router = Router()
-database = Database()
 
 
 @router.message(Command(commands=["start"]))
 async def start_command(message: Message) -> None:
-    session = await database.get_session()
+    session = await get_session()
 
     user = await User.find_by_user_id(session, str(message.from_user.id))
 
