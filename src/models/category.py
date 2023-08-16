@@ -11,12 +11,12 @@ from src.schemas.category import CategorySchema
 class Category(Base):
     name: Mapped[str] = mapped_column(unique=True)
 
-    products: Mapped[List["Product"]] = relationship(back_populates="category")  # noqa
+    products: Mapped[List["Product"]] = relationship(back_populates="category", lazy="subquery")  # noqa
 
     @classmethod
     async def get_all_categories(cls, db_session: AsyncSession) -> list[CategorySchema]:
         """
-        Получить все категории пользователей.
+        Получить все категории.
         :param db_session: Сессия базы данных
         :return: list[CategorySchema]
         """

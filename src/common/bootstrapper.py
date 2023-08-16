@@ -15,7 +15,11 @@ from src.common.settings import Settings
 from src.telegram.router import router as telegram_router
 from src.utils.web.username_context_processor import username_context_processor
 from src.web.middlewares import check_login
-from src.web.router import router as web_router
+from src.web.routes.auth import router as auth_router
+from src.web.routes.categories import router as categories_router
+from src.web.routes.images import router as images_router
+from src.web.routes.products import router as products_router
+from src.web.routes.users import router as users_router
 
 settings = Settings()
 
@@ -44,7 +48,7 @@ def init_web(bot: Bot) -> Application:
     web_app["static_root_url"] = "/static"
 
     # Подключаем роуты
-    web_app.add_routes(web_router)
+    web_app.add_routes([*auth_router, *categories_router, *images_router, *products_router, *users_router])
 
     # Подключаем библиотеки
     session_setup(

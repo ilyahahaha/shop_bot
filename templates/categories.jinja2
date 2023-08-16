@@ -48,11 +48,13 @@
 
     <script>
         const updateEditModal = (element) => {
+            let selectedItem = element.closest("tr")
+
             let modalIdField = document.querySelector("#id")
             let modalNameField = document.querySelector("#name")
 
-            modalIdField.value = element.closest("tr").querySelector('.id').textContent
-            modalNameField.value = element.closest("tr").querySelector('.name').textContent
+            modalIdField.value = selectedItem.querySelector('.id').textContent
+            modalNameField.value = selectedItem.querySelector('.name').textContent
         }
 
         document.addEventListener("DOMContentLoaded", function () {

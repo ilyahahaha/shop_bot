@@ -1,0 +1,86 @@
+<div class="modal modal-blur fade" id="modal-edit-product" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактирование товара</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form hx-put="/categories" autocomplete="off" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="id" name="id">
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Название</label>
+                        <input id="name" name="name" type="text" class="form-control"
+                               placeholder="Ваше название">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Категория</label>
+                        <select id="category" name="category" class="form-select">
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Описание</label>
+                        <textarea id="description" name="description" rows="6" class="form-control"
+                                  placeholder="Ваше описание"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Цена</label>
+                        <div class="input-group">
+                            <input id="price" name="price" type="number" class="form-control"
+                                   placeholder="Укажите цену" required>
+                            <span class="input-group-text">₽</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dropzone-images" class="form-label">Изображения</label>
+                        <div class="dropzone border" id="dropzone-images">
+                            <div class="dz-message">
+                                <h3 class="dropzone-msg-title">Загрузка изображений</h3>
+                                <span class="dropzone-msg-desc">Выберите или перетащите для загрузки</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" hx-delete="/products"
+                            class="btn btn-outline-danger me-auto"
+                            data-bs-dismiss="modal">
+                        Удалить
+                    </button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Сохранить</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% block javascript %}
+    <script src="{{ static("libs/dropzone/dist/dropzone-min.js") }}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropzoneImages = new window.Dropzone("#dropzone-images", {addRemoveLinks: true, url: "/file/post"});
+
+            dropzoneImages.displayExistingFile({
+                name: "test",
+                size: 12345
+            }, "https://loremflickr.com/cache/resized/65535_52738281123_7ab47db731_320_240_nofilter.jpg", null, null, true)
+
+            dropzoneImages.displayExistingFile({
+                name: "tesеt",
+                size: 123455
+            }, "https://loremflickr.com/cache/resized/65535_52738281123_7ab47db731_320_240_nofilter.jpg", null, null, true)
+
+            dropzoneImages.on("removedfile", function (file) {
+                console.log(file);
+            });
+
+        })
+    </script>
+{% endblock javascript %}

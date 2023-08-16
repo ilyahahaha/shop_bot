@@ -162,3 +162,7 @@ cython_debug/
 # Migrations
 migrations/versions/*
 !migrations/versions/.gitkeep
+
+# Images
+images/*
+!images/.gitkeep

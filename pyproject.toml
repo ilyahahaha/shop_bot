@@ -18,6 +18,8 @@ asyncpg = "^0.28.0"
 alembic = "^1.11.2"
 cuid2 = "^2.0.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pillow = "^10.0.0"
+aiofiles = "^23.1"
 
 
 [tool.poetry.group.dev.dependencies]
